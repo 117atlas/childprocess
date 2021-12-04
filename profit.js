@@ -297,7 +297,6 @@ const calculateProfit = function (strategyVars, tripletsData, bookTicker, update
                 message: 'done',
                 result: null
             });
-            process.exit(0);
         }
 
         let filteredTriplets = updatedMdpIds
@@ -320,7 +319,6 @@ const calculateProfit = function (strategyVars, tripletsData, bookTicker, update
                 message: 'done',
                 result: null
             });
-            process.exit(0);
         }
 
         let nBTripletsToCheck = filteredTriplets.length;
@@ -547,7 +545,6 @@ const calculateProfit = function (strategyVars, tripletsData, bookTicker, update
             message: 'done',
             result: true
         });
-        process.exit(0);
 
     } catch (e) {
         process.send({
@@ -556,7 +553,6 @@ const calculateProfit = function (strategyVars, tripletsData, bookTicker, update
             error_stack: e.stack,
             result: null
         });
-        process.exit(0);
     }
 
 }

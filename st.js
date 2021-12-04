@@ -2,7 +2,18 @@ const {fork} = require('child_process');
 
 let precise = require('precise');
 
+let kill = require('tree-kill');
+
 let SchedulerId = null;
+
+const KillProcess = (pid) => {
+    return new Promise((resolve, reject) => {
+        kill(pid, 'SIGKILL', (err) => {
+            if (err) reject(err);
+            else resolve();
+        })
+    })
+}
 
 function Scheduler() {
     SchedulerId = setTimeout(()=>{
@@ -49,7 +60,7 @@ const Main = function () {
             require('fs').writeFileSync('./results/result_' + Date.now() + ".json", JSON.stringify(result, null, 4));
             console.log("Whole strategy ended ", (diff/1000000), " ms");
             Scheduler();
-            //Calculator.kill('SIGINT');
+            KillProcess(Calculator.pid).then().catch(e=>console.error(e));
         }
         else if (message["message"] === 'error') {
             timer.stop();
@@ -59,7 +70,7 @@ const Main = function () {
             console.log("Calculate profit error");
             console.error(message["error_stack"]);
             Scheduler();
-            Calculator.kill('SIGINT');
+            KillProcess(Calculator.pid).then().catch(e=>console.error(e));
         }
     })
     timer.start();
