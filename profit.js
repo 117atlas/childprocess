@@ -6,7 +6,7 @@ const {Decimal} = require('decimal.js');
 
 const DateUtils = require('./utils/dateutils');
 
-const MAX_PART_NB_TX = 500;
+const MAX_PART_NB_TX = 100;
 
 const convertInitialAmount = function (strategyVars, amount, coin, bookTicker, tripletsData) {
     let stables = strategyVars["stableCoins"];
