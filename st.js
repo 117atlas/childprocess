@@ -31,6 +31,7 @@ const Main = function () {
     let initialAmount = 100;
 
     const Calculator = fork(__dirname + "/profit.js");
+    console.log(Calculator.pid);
     Calculator.on('error', (err) => {
         console.error(err);
     });
