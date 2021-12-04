@@ -535,12 +535,11 @@ const calculateProfit = function (strategyVars, tripletsData, bookTicker, update
             }
 
             let stTime = Date.now() - start;
-            console.log("Partition ", (j+1), " - ", stTime + " ms");
 
             parentPort.postMessage({
                 message: 'result',
-                result: []
-                //result: {trades, mdPairsTimes, nBTripletsToCheck, initialUsdAmount, stTime, nbPartitions, partNum: (j+1)}
+                //result: []
+                result: {trades, mdPairsTimes, nBTripletsToCheck, initialUsdAmount, stTime, nbPartitions, partNum: (j+1)}
             });
         }
 

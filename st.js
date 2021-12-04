@@ -60,16 +60,16 @@ const Main = function () {
     worker.on('message', message => {
         if (message["message"] === 'result') {
             let p = message["result"];
-            /*p["trades"] = p["trades"].sort((a, b)=>{
+            p["trades"] = p["trades"].sort((a, b)=>{
                 if (a["profit"] > b["profit"]) return -1;
                 else if (a["profit"] < b["profit"]) return 1;
                 return 0;
             })
             if (p["trades"].length > 20) {
                 p["trades"] = p["trades"].slice(0, 20);
-            }*/
+            }
             results.push({num: i+1, result: p});
-            console.log("Result " + (i+1) + " arrived");
+            console.log("Result " + (i+1) + " arrived - ", p["stTime"], " ms");
             i++;
         }
         else if (message["message"] === 'done') {
