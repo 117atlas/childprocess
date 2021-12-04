@@ -7,7 +7,7 @@ let SchedulerId = null;
 function Scheduler() {
     SchedulerId = setTimeout(()=>{
         console.log("Calculator launched");
-        Main2();
+        Main();
     }, 100);
     console.log("Calculator scheduled after ", 100, " ms");
 }
@@ -30,14 +30,14 @@ const Main = function () {
     Calculator.on('message', message => {
         if (message["message"] === 'result') {
             let p = message["result"];
-            p["trades"] = p["trades"].sort((a, b)=>{
+            /*p["trades"] = p["trades"].sort((a, b)=>{
                 if (a["profit"] > b["profit"]) return -1;
                 else if (a["profit"] < b["profit"]) return 1;
                 return 0;
             })
             if (p["trades"].length > 20) {
                 p["trades"] = p["trades"].slice(0, 20);
-            }
+            }*/
             results.push({num: i+1, result: p});
             console.log("Result " + (i+1) + " arrived");
             i++;
@@ -49,7 +49,7 @@ const Main = function () {
             require('fs').writeFileSync('./results/result_' + Date.now() + ".json", JSON.stringify(result, null, 4));
             console.log("Whole strategy ended ", (diff/1000000), " ms");
             Scheduler();
-            Calculator.kill('SIGINT');
+            //Calculator.kill('SIGINT');
         }
         else if (message["message"] === 'error') {
             timer.stop();

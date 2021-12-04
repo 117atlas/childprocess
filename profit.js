@@ -297,7 +297,7 @@ const calculateProfit = function (strategyVars, tripletsData, bookTicker, update
                 message: 'done',
                 result: null
             });
-            //process.exit(0);
+            process.exit(0);
         }
 
         let filteredTriplets = updatedMdpIds
@@ -320,7 +320,7 @@ const calculateProfit = function (strategyVars, tripletsData, bookTicker, update
                 message: 'done',
                 result: null
             });
-            //process.exit(0);
+            process.exit(0);
         }
 
         let nBTripletsToCheck = filteredTriplets.length;
@@ -352,6 +352,7 @@ const calculateProfit = function (strategyVars, tripletsData, bookTicker, update
 
             let trades = [];
             filteredTriplets = partitions[j];
+
             for (let i=0; i<filteredTriplets.length; i++) {
                 let start = Date.now();
 
@@ -537,7 +538,8 @@ const calculateProfit = function (strategyVars, tripletsData, bookTicker, update
 
             process.send({
                 message: 'result',
-                result: {trades, mdPairsTimes, nBTripletsToCheck, initialUsdAmount, stTime, nbPartitions, partNum: (j+1)}
+                result: []
+                //result: {trades, mdPairsTimes, nBTripletsToCheck, initialUsdAmount, stTime, nbPartitions, partNum: (j+1)}
             });
         }
 
@@ -545,7 +547,7 @@ const calculateProfit = function (strategyVars, tripletsData, bookTicker, update
             message: 'done',
             result: true
         });
-        //process.exit(0);
+        process.exit(0);
 
     } catch (e) {
         process.send({
@@ -554,7 +556,7 @@ const calculateProfit = function (strategyVars, tripletsData, bookTicker, update
             error_stack: e.stack,
             result: null
         });
-        //process.exit(0);
+        process.exit(0);
     }
 
 }
