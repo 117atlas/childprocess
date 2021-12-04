@@ -76,7 +76,7 @@ const Main = function () {
             timer.stop();
             let diff = timer.diff();
             let result = {time_precise: diff/1000000, results: results};
-            //require('fs').writeFileSync('./results/result_' + Date.now() + ".json", JSON.stringify(result, null, 4));
+            require('fs').writeFileSync('./results/result_' + Date.now() + ".json", JSON.stringify(result, null, 4));
             console.log("Whole strategy ended ", (diff/1000000), " ms");
             Scheduler();
             //KillProcess(Calculator.pid).then().catch(e=>console.error(e));
@@ -86,7 +86,7 @@ const Main = function () {
             timer.stop();
             let diff = timer.diff();
             let result = {time_precise: diff/1000000, results: results, error_stack: message["error_stack"]};
-            //require('fs').writeFileSync('./results/result_' + Date.now() + "_ERROR.json", JSON.stringify(result, null, 4));
+            require('fs').writeFileSync('./results/result_' + Date.now() + "_ERROR.json", JSON.stringify(result, null, 4));
             console.log("Calculate profit error");
             console.error(message["error_stack"]);
             Scheduler();
