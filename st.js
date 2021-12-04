@@ -7,7 +7,7 @@ let SchedulerId = null;
 function Scheduler() {
     SchedulerId = setTimeout(()=>{
         console.log("Calculator launched");
-        Main();
+        Main2();
     }, 100);
     console.log("Calculator scheduled after ", 100, " ms");
 }
@@ -67,6 +67,34 @@ const Main = function () {
         message: 'start',
         params: {strategyVars, tripletsData: tripletsData, bookTicker: bookTicker,
             updatedMdpIds: updatedMdpIds, varInitAmt: initialAmount}
+    });
+}
+
+const Main2 = function () {
+    const HardCarl = fork(__dirname + "/hardcalc.js");
+    HardCarl.on('error', (err) => {
+        console.error(err);
+    });
+
+    let i = 0;
+    let results = [];
+    let timer = precise();
+
+    HardCarl.on('message', message =>  {
+        if (message["message"] === 'result') {
+            console.log("Result " + (i+1) + " arrived - " + JSON.stringify(message["data"]));
+            i++;
+        }
+        else if (message["message"] === 'done') {
+            timer.stop();
+            let diff = timer.diff();
+            console.log("Whole calculation ended ", (diff/1000000), " ms");
+            Scheduler();
+        }
+    });
+    timer.start();
+    HardCarl.send({
+        message: 'start'
     });
 }
 
