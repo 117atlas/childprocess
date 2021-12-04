@@ -1,3 +1,5 @@
+const {parentPort} = require('worker_threads');
+
 let shortId = require('shortid');
 
 const {Decimal} = require('decimal.js');
@@ -293,7 +295,7 @@ const calculateProfit = function (strategyVars, tripletsData, bookTicker, update
 
         if (updatedMdpIds.length === 0) {
             console.log('Child process for calculation - updatedMdp = 0');
-            process.send({
+            parentPort.postMessage({
                 message: 'done',
                 result: null
             });
@@ -315,7 +317,7 @@ const calculateProfit = function (strategyVars, tripletsData, bookTicker, update
 
         if (filteredTriplets.length === 0) {
             console.log('Child process for calculation - filteredTriplets = 0');
-            process.send({
+            parentPort.postMessage({
                 message: 'done',
                 result: null
             });
@@ -534,20 +536,20 @@ const calculateProfit = function (strategyVars, tripletsData, bookTicker, update
 
             let stTime = Date.now() - start;
 
-            process.send({
+            parentPort.postMessage({
                 message: 'result',
                 result: []
                 //result: {trades, mdPairsTimes, nBTripletsToCheck, initialUsdAmount, stTime, nbPartitions, partNum: (j+1)}
             });
         }
 
-        process.send({
+        parentPort.postMessage({
             message: 'done',
             result: true
         });
 
     } catch (e) {
-        process.send({
+        parentPort.postMessage({
             message: 'error',
             error_message: e.message,
             error_stack: e.stack,
@@ -557,7 +559,7 @@ const calculateProfit = function (strategyVars, tripletsData, bookTicker, update
 
 }
 
-process.on('message', message => {
+parentPort.on('message', message => {
     if (message["message"] === 'start') {
         let params = message["params"];
         console.log('Child process for calculation started');
@@ -565,5 +567,16 @@ process.on('message', message => {
             params["updatedMdpIds"], params["varInitAmt"]);
     }
 })
+
+/*process.on('message', message => {
+    if (message["message"] === 'start') {
+        let params = message["params"];
+        console.log('Child process for calculation started');
+        calculateProfit(params["strategyVars"], params["tripletsData"], params["bookTicker"],
+            params["updatedMdpIds"], params["varInitAmt"]);
+    }
+})*/
+
+
 
 module.exports = calculateProfit;

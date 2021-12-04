@@ -1,4 +1,5 @@
 const {fork} = require('child_process');
+const {Worker} = require('worker_threads');
 
 let precise = require('precise');
 
@@ -30,16 +31,33 @@ const Main = function () {
     let updatedMdpIds = require('./data/socketresponse4.json').updatedMdpIds
     let initialAmount = 100;
 
-    const Calculator = fork(__dirname + "/profit.js");
+    /*const Calculator = fork(__dirname + "/profit.js");
     console.log(Calculator.pid);
     Calculator.on('error', (err) => {
         console.error(err);
-    });
+    });*/
 
+    const worker = new Worker(__dirname + "/profit.js");
+    console.log(worker.threadId);
     let i = 0;
     let results = [];
     let timer = precise();
-    Calculator.on('message', message => {
+
+    worker.on('error', err => {
+        console.log("Worker thread errored");
+        console.log(err);
+    });
+    worker.on('exit', exitCode => {
+        console.log("Worker thread exited - ", exitCode);
+    });
+    worker.on('messageerror', err => {
+        console.log("Worker thread message-errored");
+        console.log(err);
+    });
+    worker.on('online', err => {
+        console.log("Worker Thread is online");
+    });
+    worker.on('message', message => {
         if (message["message"] === 'result') {
             let p = message["result"];
             /*p["trades"] = p["trades"].sort((a, b)=>{
@@ -61,7 +79,8 @@ const Main = function () {
             require('fs').writeFileSync('./results/result_' + Date.now() + ".json", JSON.stringify(result, null, 4));
             console.log("Whole strategy ended ", (diff/1000000), " ms");
             Scheduler();
-            KillProcess(Calculator.pid).then().catch(e=>console.error(e));
+            //KillProcess(Calculator.pid).then().catch(e=>console.error(e));
+            worker.terminate().then(value => console.log("Worker thread terminated - ", value)).catch(e => console.error(e));
         }
         else if (message["message"] === 'error') {
             timer.stop();
@@ -71,15 +90,23 @@ const Main = function () {
             console.log("Calculate profit error");
             console.error(message["error_stack"]);
             Scheduler();
-            KillProcess(Calculator.pid).then().catch(e=>console.error(e));
+            //KillProcess(Calculator.pid).then().catch(e=>console.error(e));
+            worker.terminate().then(value => console.log("Worker thread terminated - ", value)).catch(e => console.error(e));
         }
-    })
+    });
+
     timer.start();
-    Calculator.send({
+    worker.postMessage({
         message: 'start',
         params: {strategyVars, tripletsData: tripletsData, bookTicker: bookTicker,
             updatedMdpIds: updatedMdpIds, varInitAmt: initialAmount}
     });
+    /*timer.start();
+    Calculator.send({
+        message: 'start',
+        params: {strategyVars, tripletsData: tripletsData, bookTicker: bookTicker,
+            updatedMdpIds: updatedMdpIds, varInitAmt: initialAmount}
+    });*/
 }
 
 const Main2 = function () {
