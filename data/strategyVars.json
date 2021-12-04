@@ -1,0 +1,11 @@
+{
+    "defaultTradeFee": 0.00085,
+    "useDefaultTradeFee": true,
+    "initialAmount": 293.60211962,
+    "stableCoins": [
+        "USDT",
+        "USDC",
+        "BUSD",
+        "DAI"
+    ]
+}
